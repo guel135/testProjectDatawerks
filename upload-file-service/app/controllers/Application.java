@@ -12,13 +12,13 @@ public class Application extends Controller{
 	
 	public Result upload() {
 	    MultipartFormData<File> body = request().body().asMultipartFormData();
-	    FilePart<File> picture = body.getFile("fileUpload");
-	    if (picture != null) {
-	        String fileName = picture.getFilename();
-	        String contentType = picture.getContentType();
-	        File file = picture.getFile();
-	        System.out.println(picture.getFilename());
-	        return ok("File uploaded");
+	    FilePart<File> fileUploaded = body.getFile("fileUpload");
+	    if (fileUploaded != null) {
+	        String fileName = fileUploaded.getFilename();
+	        String contentType = fileUploaded.getContentType();
+	        File file = fileUploaded.getFile();
+	        System.out.println(fileUploaded.getFilename());
+	        return ok("File "+fileUploaded.getFilename()+" uploaded");
 	    } else {
 	        flash("error", "Missing file");
 	        return badRequest();
