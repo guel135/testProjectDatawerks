@@ -82,7 +82,7 @@ public class ReadFileController extends Controller {
 			br = new BufferedReader(new FileReader(csvFileOriginal));
 			while ((line = br.readLine()) != null) {
 				
-				// Filtering incomplete lines
+				// Filtering incomplete lines, this filter increase performance avoiding split empty lines.
 				if (!line.contains(",,,,,"))
 				// esto deberia ser con una lambda y un filtro
 				{
@@ -137,11 +137,11 @@ public class ReadFileController extends Controller {
 		}
 	}
 
-	private User createUser(String[] word) throws ParseException {
+	private User createUser(String[] column) throws ParseException {
 		User user = new User();
-		user.setId(Long.parseLong(word[0]));
-		user.setName(word[1]);
-		user.setTime_of_start(timeToUTC(word[2]));
+		user.setId(Long.parseLong(column[0]));
+		user.setName(column[1].toLowerCase());
+		user.setTime_of_start(timeToUTC(column[2]));
 		return user;
 	}
 
