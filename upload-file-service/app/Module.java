@@ -1,8 +1,6 @@
-import com.google.inject.AbstractModule;
-
-import controllers.MailConsumer;
-
 import java.time.Clock;
+
+import com.google.inject.AbstractModule;
 
 import services.ApplicationTimer;
 import services.AtomicCounter;
@@ -26,9 +24,6 @@ public class Module extends AbstractModule {
         bind(Clock.class).toInstance(Clock.systemDefaultZone());
         // Ask Guice to create an instance of ApplicationTimer when the
         // application starts.
-//        bind(MailConsumer.class);
-//        MailConsumer.initService();
-//        System.out.println("reading starting moduleeeeeeeeeeees");
         bind(ApplicationTimer.class).asEagerSingleton();
         // Set AtomicCounter as the implementation for Counter.
         bind(Counter.class).to(AtomicCounter.class);

@@ -9,6 +9,7 @@ import play.mvc.Result;
 
 public class Application extends Controller {
 
+
 	public Result upload() {
 		MultipartFormData<File> body = request().body().asMultipartFormData();
 		FilePart<File> fileUploaded = body.getFile("fileUpload");

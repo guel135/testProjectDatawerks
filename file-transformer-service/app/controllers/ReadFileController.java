@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,6 +14,7 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Stream;
 
 import models.User;
 import play.db.jpa.Transactional;
@@ -22,6 +25,8 @@ public class ReadFileController extends Controller {
 
 	String csvFile = "resources/data_test_cut.csv";
 	String csvFileOriginal = "resources/data_test.csv";
+
+	TreeMap<String, User> usersThird = new TreeMap<>();
 
 	public void readFile() {
 		// File file = new File("resources/data_test_cut.csv");
@@ -70,6 +75,18 @@ public class ReadFileController extends Controller {
 
 	}
 
+	public Result readFileThirdOption() throws IOException{
+		try (Stream<String> stream = Files.lines(Paths.get("csvFileOriginal"))) {
+		    stream
+		        .filter(line -> !line.contains(",,,,,"))
+		        .map(String::trim)
+		        .forEach(line->{
+		        	line.split(",");	
+		        });
+		}
+		return ok("file read third method");
+	}
+
 	@Transactional(readOnly = true)
 	public Result readFileSecondOption() {
 
@@ -81,8 +98,9 @@ public class ReadFileController extends Controller {
 
 			br = new BufferedReader(new FileReader(csvFileOriginal));
 			while ((line = br.readLine()) != null) {
-				
-				// Filtering incomplete lines, this filter increase performance avoiding split empty lines.
+
+				// Filtering incomplete lines, this filter increase performance
+				// avoiding split empty lines.
 				if (!line.contains(",,,,,"))
 				// esto deberia ser con una lambda y un filtro
 				{
@@ -122,17 +140,15 @@ public class ReadFileController extends Controller {
 
 	private void manageReadedUsers(TreeMap<String, User> users) {
 		for (Map.Entry<String, User> entry : users.entrySet()) {
-			
-			UserController userController=new UserController();
-			
-			if (!userController.userIdExists(entry.getValue().getId())){
-				userController.insertUser(entry.getValue());
-				System.out.println("Inserted user with id "+ entry.getKey()+ " in database");
-				
-			}else System.out.println("Existing user with id "+ entry.getKey()+ " in database");
-			
-			
 
+			UserController userController = new UserController();
+
+			if (!userController.userIdExists(entry.getValue().getId())) {
+				userController.insertUser(entry.getValue());
+				System.out.println("Inserted user with id " + entry.getKey() + " in database");
+
+			} else
+				System.out.println("Existing user with id " + entry.getKey() + " in database");
 
 		}
 	}
