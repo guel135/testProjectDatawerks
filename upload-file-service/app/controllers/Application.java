@@ -30,7 +30,7 @@ public class Application extends Controller {
 
 	public Result startActiveMQ() {
 
-		MailConsumer.initService();
+		MessageConsumerController.initService();
 		return ok("Active MQ started");
 
 	}

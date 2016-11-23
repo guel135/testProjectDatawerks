@@ -75,17 +75,17 @@ public class ReadFileController extends Controller {
 
 	}
 
-	public Result readFileThirdOption() throws IOException{
-		try (Stream<String> stream = Files.lines(Paths.get("csvFileOriginal"))) {
-		    stream
-		        .filter(line -> !line.contains(",,,,,"))
-		        .map(String::trim)
-		        .forEach(line->{
-		        	line.split(",");	
-		        });
-		}
-		return ok("file read third method");
-	}
+//	public Result readFileThirdOption() throws IOException{
+//		try (Stream<String> stream = Files.lines(Paths.get("csvFileOriginal"))) {
+//		    stream
+//		        .filter(line -> !line.contains(",,,,,"))
+//		        .map(String::trim)
+//		        .forEach(line->{
+//		        	line.split(",")-->{};	
+//		        });
+//		}
+//		return ok("file read third method");
+//	}
 
 	@Transactional(readOnly = true)
 	public Result readFileSecondOption() {
