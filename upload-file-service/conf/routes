@@ -15,4 +15,3 @@ POST 	/upload 					controllers.Application.upload()
 
 #GET    /activemq/sendMessage controllers.ProducerController.sendMessage
 #GET    /activemq/messageListener controllers.ConsumerController.messageConsumer
-GET   /activemq/start controllers.Application.startActiveMQ()

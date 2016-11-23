@@ -18,21 +18,21 @@ import play.Logger;
 
 public class MessageConsumerController implements Runnable, ExceptionListener {
 	private static final String TOPIC_NAME = "miguelTopic";
-	private static Thread mailConsumerService;
+	private static Thread consumerService;
 
 	public static synchronized void initService() {
 		Logger.info("Message Consumer initialized");
-		MessageConsumerController mailConsumer = new MessageConsumerController();
-		if (mailConsumerService != null) {
-			Logger.info("STOPPING MailConsumer thread.");
-			mailConsumerService.interrupt();
+		MessageConsumerController MessageConsumer = new MessageConsumerController();
+		if (consumerService != null) {
+			Logger.info("STOPPING MessageConsumer thread.");
+			consumerService.interrupt();
 		}
-		Logger.info("Starting MailConsumer thread.");
-		mailConsumerService = new Thread(mailConsumer);
-		mailConsumerService.setDaemon(true);
-		mailConsumerService.setName("MailConsumer Service");
-		mailConsumerService.start();
-		Logger.info("MailConsumer thread started.");
+		Logger.info("Starting MessageConsumer thread.");
+		consumerService = new Thread(MessageConsumer);
+		consumerService.setDaemon(true);
+		consumerService.setName("MessageConsumer Service");
+		consumerService.start();
+		Logger.info("MessageConsumer thread started.");
 	}
 
 	@Inject
@@ -71,13 +71,13 @@ public class MessageConsumerController implements Runnable, ExceptionListener {
 				}
 
 			}
-			Logger.info("MailConsumer interrupted.");
+			Logger.info("Message consumer interrupted.");
 			consumer.close();
 			session.close();
 			connection.close();
 		} catch (Exception e) {
 			if (e instanceof InterruptedException) {
-				Logger.info("MailConsumer thread interrupted.");
+				Logger.info("Message Consumer thread interrupted.");
 			} else {
 				Logger.error(e.getLocalizedMessage(), e);
 			}
