@@ -13,8 +13,12 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 
 import com.google.inject.Inject;
 
+import models.User;
 import play.Configuration;
 import play.Logger;
+import play.db.jpa.JPA;
+import play.db.jpa.JPAApi;
+import play.db.jpa.Transactional;
 
 public class MessageConsumerController implements Runnable, ExceptionListener {
 	private static final String TOPIC_NAME = "miguelTopic";
@@ -39,6 +43,7 @@ public class MessageConsumerController implements Runnable, ExceptionListener {
 	Configuration config;
 
 	@Override
+	@Transactional
 	public void run() {
 		try {
 
@@ -65,6 +70,19 @@ public class MessageConsumerController implements Runnable, ExceptionListener {
 					TextMessage textMessage = (TextMessage) message;
 					String text = textMessage.getText();
 					Logger.info("Received: " + text);
+					User user = new User();
+					user.setId(555);
+					user.setName("miguel");
+					user.setTime_of_start("time");
+					Logger.info("insert user");
+					
+					JPA.em().getTransaction().begin();
+					JPA.em().persist(user); // em.merge(u); for updates
+					JPA.em().getTransaction().commit();
+					
+					
+//					ReadFileController readfile = new ReadFileController();
+//					readfile.readFileSecondOption();
 
 				} else {
 					Logger.info("Received: " + message.getClass().getSimpleName());
@@ -88,4 +106,5 @@ public class MessageConsumerController implements Runnable, ExceptionListener {
 		Logger.error("JMS Exception occured.  Shutting down client.");
 		Logger.error("ErrorCode=" + ex.getErrorCode() + " , " + ex.getMessage(), ex);
 	}
+
 }
