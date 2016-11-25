@@ -9,15 +9,12 @@ import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
-import javax.persistence.EntityManager;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 import models.User;
 import play.Logger;
 import play.db.jpa.JPA;
-import play.db.jpa.JPAApi;
-import play.db.jpa.Transactional;
 
 public class MessageConsumerController implements Runnable, ExceptionListener {
 	private static final String TOPIC_NAME = "miguelTopic";
@@ -77,24 +74,10 @@ public class MessageConsumerController implements Runnable, ExceptionListener {
 					// JPA.withTransaction();
 
 					JPA.withTransaction(() -> {
-						// JPA.em().getTransaction().commit();
-						// JPA.em().getTransaction().begin();
-						// JPA.em().persist(user); //
-						ReadFile readFile = new ReadFile();
-						readFile.readFileSecondOption(text);
+						ReadFile readFile=new ReadFile();
+						readFile.loadFileFromDisk(text);
 
 					});
-
-					// jpa.withTransaction(entityManager) -> {
-					// JPA.em().getTransaction().begin();
-					// JPA.em().persist(user); //
-					// JPA.em().getTransaction().commit();
-					//
-					//
-					// });
-
-					// ReadFileController readfile = new ReadFileController();
-					// readfile.readFileSecondOption();
 
 				} else {
 					Logger.info("Received: " + message.getClass().getSimpleName());

@@ -20,7 +20,7 @@ import play.db.jpa.Transactional;
 public class ReadFile {
 	
 	@Transactional(readOnly = true)
-	public void readFileSecondOption(String fileUrl) {
+	public void loadFileFromDisk(String fileUrl) {
 
 		BufferedReader br = null;
 		String line = "";
@@ -46,7 +46,7 @@ public class ReadFile {
 							}
 						}
 					} catch (Exception e) {
-						Logger.info(e.toString());
+						Logger.error("Line without appropiate format rejected with error: "+e.toString());
 					}
 				}
 			}
@@ -72,10 +72,10 @@ public class ReadFile {
 	private void manageReadedUsers(TreeMap<String, User> users) {
 		for (Map.Entry<String, User> entry : users.entrySet()) {
 
-			UserController userController = new UserController();
+			PersistenceController persistenceController = new PersistenceController();
 
-			if (!userController.userIdExists(entry.getValue().getId())) {
-				userController.insertUser(entry.getValue());
+			if (!persistenceController.userIdExists(entry.getValue().getId())) {
+				persistenceController.insertUserWithTransaction(entry.getValue());
 				System.out.println("Inserted user with id " + entry.getKey() + " in database");
 
 			} else

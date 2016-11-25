@@ -12,7 +12,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import models.User;
-import play.Logger;
 import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
 import play.libs.Json;
@@ -20,11 +19,11 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-public class UserController extends Controller {
+public class PersistenceController extends Controller {
 
 	@Transactional
 	@BodyParser.Of(BodyParser.Json.class)
-	public Result addUser() {
+	public Result addUserFromJson() {
 
 		ObjectMapper mapper = new ObjectMapper();
 
@@ -45,7 +44,6 @@ public class UserController extends Controller {
 
 	}
 
-	@Transactional(readOnly = true)
 	public Result listUsers() {
 
 		CriteriaBuilder criteriaBuilder = JPA.em().getCriteriaBuilder();
@@ -59,7 +57,6 @@ public class UserController extends Controller {
 		return ok(jsonNodes);
 	}
 
-	@Transactional(readOnly = true)
 	public Boolean userIdExists(Long id) {
 		if (JPA.em().find(User.class, id) == null) {
 			return false;
@@ -69,22 +66,8 @@ public class UserController extends Controller {
 
 	}
 
-	public void insertUser(User user) {
-//		if (JPA.em().getTransaction().isActive()) {
-			Logger.info("The transaction was open and need to be closed");
-			//JPA.em().getTransaction().commit();
-//		}
-			//JPA.em().getTransaction().begin();
-		JPA.em().persist(user); // em.merge(u); for updates
-//		if (JPA.em().getTransaction().isActive())
-//			JPA.em().getTransaction().commit();
-
+	public void insertUserWithTransaction(User user) {
+		JPA.em().persist(user); 
 	}
 
-	public void insertUserTransaction(User user) {
-		JPA.em().persist(user); // em.merge(u); for updates
-		JPA.em().getTransaction().commit();
-		JPA.em().getTransaction().begin();
-
-	}
 }
