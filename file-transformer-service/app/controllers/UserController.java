@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import models.User;
+import play.Logger;
 import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
 import play.libs.Json;
@@ -69,9 +70,21 @@ public class UserController extends Controller {
 	}
 
 	public void insertUser(User user) {
-		JPA.em().getTransaction().begin();
+//		if (JPA.em().getTransaction().isActive()) {
+			Logger.info("The transaction was open and need to be closed");
+			//JPA.em().getTransaction().commit();
+//		}
+			//JPA.em().getTransaction().begin();
+		JPA.em().persist(user); // em.merge(u); for updates
+//		if (JPA.em().getTransaction().isActive())
+//			JPA.em().getTransaction().commit();
+
+	}
+
+	public void insertUserTransaction(User user) {
 		JPA.em().persist(user); // em.merge(u); for updates
 		JPA.em().getTransaction().commit();
+		JPA.em().getTransaction().begin();
 
 	}
 }

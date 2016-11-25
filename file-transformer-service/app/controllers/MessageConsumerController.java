@@ -1,5 +1,6 @@
 package controllers;
 
+import javax.inject.Inject;
 import javax.jms.Connection;
 import javax.jms.Destination;
 import javax.jms.ExceptionListener;
@@ -8,13 +9,11 @@ import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+import javax.persistence.EntityManager;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-import com.google.inject.Inject;
-
 import models.User;
-import play.Configuration;
 import play.Logger;
 import play.db.jpa.JPA;
 import play.db.jpa.JPAApi;
@@ -39,11 +38,8 @@ public class MessageConsumerController implements Runnable, ExceptionListener {
 		Logger.info("MessageConsumer thread started.");
 	}
 
-	@Inject
-	Configuration config;
-
+	@SuppressWarnings("deprecation")
 	@Override
-	@Transactional
 	public void run() {
 		try {
 
@@ -75,14 +71,30 @@ public class MessageConsumerController implements Runnable, ExceptionListener {
 					user.setName("miguel");
 					user.setTime_of_start("time");
 					Logger.info("insert user");
-					
-					JPA.em().getTransaction().begin();
-					JPA.em().persist(user); // em.merge(u); for updates
-					JPA.em().getTransaction().commit();
-					
-					
-//					ReadFileController readfile = new ReadFileController();
-//					readfile.readFileSecondOption();
+
+					// JPAApi jpa =
+					// Play.current().injector().instanceOf(JPAApi.class);
+					// JPA.withTransaction();
+
+					JPA.withTransaction(() -> {
+						// JPA.em().getTransaction().commit();
+						// JPA.em().getTransaction().begin();
+						// JPA.em().persist(user); //
+						ReadFile readFile = new ReadFile();
+						readFile.readFileSecondOption(text);
+
+					});
+
+					// jpa.withTransaction(entityManager) -> {
+					// JPA.em().getTransaction().begin();
+					// JPA.em().persist(user); //
+					// JPA.em().getTransaction().commit();
+					//
+					//
+					// });
+
+					// ReadFileController readfile = new ReadFileController();
+					// readfile.readFileSecondOption();
 
 				} else {
 					Logger.info("Received: " + message.getClass().getSimpleName());

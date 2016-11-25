@@ -17,6 +17,7 @@ import java.util.TreeMap;
 import java.util.stream.Stream;
 
 import models.User;
+import play.Logger;
 import play.db.jpa.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -144,7 +145,9 @@ public class ReadFileController extends Controller {
 			UserController userController = new UserController();
 
 			if (!userController.userIdExists(entry.getValue().getId())) {
-				userController.insertUser(entry.getValue());
+				
+				Logger.info("Persiste user call");
+				userController.insertUserTransaction(entry.getValue());
 				System.out.println("Inserted user with id " + entry.getKey() + " in database");
 
 			} else
