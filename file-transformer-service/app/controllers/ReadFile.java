@@ -13,11 +13,16 @@ import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.inject.Inject;
+
 import models.Person;
 import play.Logger;
 import play.db.jpa.Transactional;
+import services.PersistenceService;
 
 public class ReadFile {
+	
+	@Inject PersistenceService persistenceService;
 	
 	@Transactional(readOnly = true)
 	public void loadFileFromDisk(String fileUrl) {
@@ -72,10 +77,9 @@ public class ReadFile {
 	private void manageReadedPersons(TreeMap<String, Person> persons) {
 		for (Map.Entry<String, Person> entry : persons.entrySet()) {
 
-			PersistenceController persistenceController = new PersistenceController();
 
-			if (!persistenceController.personIdExists(entry.getValue().getId())) {
-				persistenceController.insertPersonWithTransaction(entry.getValue());
+			if (!persistenceService.personIdExists(entry.getValue().getId())) {
+				persistenceService.insertPersonWithTransaction(entry.getValue());
 				System.out.println("Inserted person with id " + entry.getKey() + " in database");
 
 			} else
