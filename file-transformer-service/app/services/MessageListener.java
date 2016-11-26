@@ -12,7 +12,6 @@ import javax.jms.TextMessage;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 import controllers.ReadFile;
-import models.User;
 import play.Logger;
 import play.db.jpa.JPA;
 
@@ -63,18 +62,9 @@ public class MessageListener implements Runnable, ExceptionListener {
 					TextMessage textMessage = (TextMessage) message;
 					String text = textMessage.getText();
 					Logger.info("Received: " + text);
-					User user = new User();
-					user.setId(555);
-					user.setName("miguel");
-					user.setTime_of_start("time");
-					Logger.info("insert user");
-
-					// JPAApi jpa =
-					// Play.current().injector().instanceOf(JPAApi.class);
-					// JPA.withTransaction();
 
 					JPA.withTransaction(() -> {
-						ReadFile readFile=new ReadFile();
+						ReadFile readFile = new ReadFile();
 						readFile.loadFileFromDisk(text);
 
 					});

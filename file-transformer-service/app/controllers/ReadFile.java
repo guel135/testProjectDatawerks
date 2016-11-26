@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
 
-import models.User;
+import models.Person;
 import play.Logger;
 import play.db.jpa.Transactional;
 
@@ -24,7 +24,7 @@ public class ReadFile {
 
 		BufferedReader br = null;
 		String line = "";
-		TreeMap<String, User> users = new TreeMap<>();
+		TreeMap<String, Person> persons = new TreeMap<>();
 
 		try {
 
@@ -39,10 +39,10 @@ public class ReadFile {
 					try {
 						String[] word = line.split(",");
 						if (word[0] != null && !(word[0].equals("Id")) && (word[1] != null) && (word[2] != null)) {
-							if (users.containsKey(word[0]) == false) {
+							if (persons.containsKey(word[0]) == false) {
 
-								User user = createUser(word);
-								users.put(word[0], user);
+								Person person = createPerson(word);
+								persons.put(word[0], person);
 							}
 						}
 					} catch (Exception e) {
@@ -65,31 +65,31 @@ public class ReadFile {
 				}
 			}
 		}
-		manageReadedUsers(users);
+		manageReadedPersons(persons);
 
 	}
 
-	private void manageReadedUsers(TreeMap<String, User> users) {
-		for (Map.Entry<String, User> entry : users.entrySet()) {
+	private void manageReadedPersons(TreeMap<String, Person> persons) {
+		for (Map.Entry<String, Person> entry : persons.entrySet()) {
 
 			PersistenceController persistenceController = new PersistenceController();
 
-			if (!persistenceController.userIdExists(entry.getValue().getId())) {
-				persistenceController.insertUserWithTransaction(entry.getValue());
-				System.out.println("Inserted user with id " + entry.getKey() + " in database");
+			if (!persistenceController.personIdExists(entry.getValue().getId())) {
+				persistenceController.insertPersonWithTransaction(entry.getValue());
+				System.out.println("Inserted person with id " + entry.getKey() + " in database");
 
 			} else
-				System.out.println("Existing user with id " + entry.getKey() + " in database");
+				System.out.println("Existing person with id " + entry.getKey() + " in database");
 
 		}
 	}
 
-	private User createUser(String[] column) throws ParseException {
-		User user = new User();
-		user.setId(Long.parseLong(column[0]));
-		user.setName(column[1].toLowerCase());
-		user.setTime_of_start(timeToUTC(column[2]));
-		return user;
+	private Person createPerson(String[] column) throws ParseException {
+		Person person = new Person();
+		person.setId(Long.parseLong(column[0]));
+		person.setName(column[1].toLowerCase());
+		person.setTime_of_start(timeToUTC(column[2]));
+		return person;
 	}
 
 	private String timeToUTC(String dateTimeToConvert) throws ParseException {
