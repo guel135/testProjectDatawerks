@@ -11,7 +11,6 @@ import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-import controllers.ReadFile;
 import play.Logger;
 import play.db.jpa.JPA;
 
@@ -64,7 +63,7 @@ public class MessageListener implements Runnable, ExceptionListener {
 					Logger.info("Received: " + text);
 
 					JPA.withTransaction(() -> {
-						ReadFile readFile = new ReadFile();
+						ReadFileService readFile = new ReadFileService();
 						readFile.loadFileFromDisk(text);
 
 					});

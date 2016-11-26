@@ -1,4 +1,4 @@
-package controllers;
+package services;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -18,13 +18,12 @@ import javax.inject.Inject;
 import models.Person;
 import play.Logger;
 import play.db.jpa.Transactional;
-import services.PersistenceService;
 
-public class ReadFile {
+public class ReadFileService {
 	
-	@Inject PersistenceService persistenceService;
+	PersistenceService persistenceService= new PersistenceService();
 	
-	@Transactional(readOnly = true)
+	@Transactional
 	public void loadFileFromDisk(String fileUrl) {
 
 		BufferedReader br = null;
@@ -51,22 +50,22 @@ public class ReadFile {
 							}
 						}
 					} catch (Exception e) {
-						Logger.error("Line without appropiate format rejected with error: "+e.toString());
+						Logger.error("Line without appropiate format rejected with error: "+e.getMessage());
 					}
 				}
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 
-			Logger.info("FileNotFoundException");
+			Logger.error("FileNotFoundException "+e.getMessage());
 		} catch (IOException e) {
-			Logger.info("IOException");
+			Logger.error("IOException " + e.getMessage());
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					Logger.info("IOException");
+					Logger.error("IOException " + e.getMessage());
 				}
 			}
 		}
