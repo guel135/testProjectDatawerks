@@ -1,4 +1,4 @@
-package controllers;
+package services;
 
 import javax.inject.Inject;
 import javax.jms.Connection;
@@ -13,7 +13,7 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import play.Configuration;
 import play.Logger;
 
-public class MessageSender {
+public class MessageSenderService {
 	private static final String MESSAGE_TOPIC = "miguelTopic";
 	@Inject	 Configuration config;
 
@@ -37,19 +37,15 @@ public class MessageSender {
 			MessageProducer producer = session.createProducer(destination);
 			producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 
-			// Create a messages
 			TextMessage textMessage = session.createTextMessage(message);
 
-			// Tell the producer to send the message
-			Logger.info("Sent message: " + message + " hashcode: " + textMessage.hashCode() + " : "
-					+ Thread.currentThread().getName());
+			Logger.info("Sent message: " + message + " hashcode: " + textMessage.hashCode());
 			producer.send(textMessage);
 
-			// Clean up
 			session.close();
 			connection.close();
 		} catch (Exception e) {
-			Logger.error("Caught: " + e);
+			Logger.error("Message cannot be delivered: " + e.getMessage());
 		}
 	}
 }
