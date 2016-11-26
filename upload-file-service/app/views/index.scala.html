@@ -11,7 +11,7 @@
  *@
 @main("Upload a file") {
 
-@helper.form(action = routes.Application.upload, 'enctype -> "multipart/form-data") {
+@helper.form(action = routes.ApplicationController.upload, 'enctype -> "multipart/form-data") {
 
     <input type="file" name="fileUpload">
 

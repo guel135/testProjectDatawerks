@@ -20,12 +20,12 @@ public class MessageSenderService {
 	public void sendMessage(String message) {
 		try {
 //			Logger.info(config.getString("upload.url") + config.getString("activemq.url"));
-//			ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(
-//					config.getString("activemq.user"), "activemq.admin", "activemq.url");
+			ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(
+					config.getString("activemq.user"), config.getString("activemq.admin"),
+					config.getString("activemq.url"));
 
-			ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("admin", "admin",
-					"tcp://localhost:61616");
-
+//			ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("admin", "admin",
+//					"tcp://localhost:61616");
 			Logger.info("Creating connection sending Activemq");
 			Connection connection = connectionFactory.createConnection();
 			connection.start();

@@ -38,6 +38,9 @@ public class MessageListener implements Runnable, ExceptionListener {
 	public void run() {
 		try {
 
+//			ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(
+//					config.getString("activemq.user"), config.getString("activemq.admin"),
+//					config.getString("activemq.url"));
 			ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("admin", "admin",
 					"tcp://localhost:61616");
 
@@ -81,14 +84,13 @@ public class MessageListener implements Runnable, ExceptionListener {
 			if (e instanceof InterruptedException) {
 				Logger.info("Message Consumer thread interrupted.");
 			} else {
-				Logger.error(e.getLocalizedMessage(), e);
+				Logger.error("Message listerner cannot be inizializated properly" + e.getCause());
 			}
 		}
 	}
 
 	public synchronized void onException(JMSException ex) {
 		Logger.error("JMS Exception occured.  Shutting down client.");
-		Logger.error("ErrorCode=" + ex.getErrorCode() + " , " + ex.getMessage(), ex);
 	}
 
 }
