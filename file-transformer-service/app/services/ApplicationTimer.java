@@ -4,6 +4,8 @@ import java.time.Clock;
 import java.time.Instant;
 import java.util.concurrent.CompletableFuture;
 import javax.inject.*;
+
+import controllers.MessageConsumerController;
 import play.Logger;
 import play.inject.ApplicationLifecycle;
 
@@ -35,6 +37,8 @@ public class ApplicationTimer {
         // This code is called when the application starts.
         start = clock.instant();
         Logger.info("ApplicationTimer demo: Starting application at " + start);
+        
+        MessageConsumerController.initService();
 
         // When the application starts, register a stop hook with the
         // ApplicationLifecycle object. The code inside the stop hook will
