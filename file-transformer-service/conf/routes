@@ -1,6 +1,8 @@
 # Routes
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+
 PUT     /user/add           controllers.PersistenceController.addUserFromJson()
 GET     /user/all       controllers.PersistenceController.listUsers()
-GET   /activemq/start controllers.ActiveMQController.startActiveMQ()

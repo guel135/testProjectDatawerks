@@ -1,4 +1,4 @@
-package controllers;
+package services;
 
 import javax.jms.Connection;
 import javax.jms.Destination;
@@ -11,17 +11,18 @@ import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 
+import controllers.ReadFile;
 import models.User;
 import play.Logger;
 import play.db.jpa.JPA;
 
-public class MessageConsumerController implements Runnable, ExceptionListener {
+public class MessageListener implements Runnable, ExceptionListener {
 	private static final String TOPIC_NAME = "miguelTopic";
 	private static Thread consumerService;
 
 	public static synchronized void initService() {
 		Logger.info("Message Consumer initialized");
-		MessageConsumerController MessageConsumer = new MessageConsumerController();
+		MessageListener MessageConsumer = new MessageListener();
 		if (consumerService != null) {
 			Logger.info("STOPPING MessageConsumer thread.");
 			consumerService.interrupt();
