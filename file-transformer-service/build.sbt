@@ -15,8 +15,9 @@ libraryDependencies ++= Seq(
 libraryDependencies ++= Seq(
   javaJpa,
   "org.hibernate" % "hibernate-entitymanager" % "5.2.4.Final",
- "dom4j" % "dom4j" % "1.6.1" intransitive(),
-  "org.apache.activemq" % "activemq-camel" % "5.14.1"
+  "dom4j" % "dom4j" % "1.6.1" intransitive(),
+  "org.apache.activemq" % "activemq-camel" % "5.14.1",
+  "org.mockito" % "mockito-core" % "2.2.25" % "test"
 
 ) 
 

@@ -13,16 +13,14 @@ import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.inject.Inject;
-
 import models.Person;
 import play.Logger;
 import play.db.jpa.Transactional;
 
 public class ReadFileService {
-	
-	PersistenceService persistenceService= new PersistenceService();
-	
+
+	public PersistenceService persistenceService = new PersistenceService();
+
 	@Transactional
 	public void loadFileFromDisk(String fileUrl) {
 
@@ -50,14 +48,14 @@ public class ReadFileService {
 							}
 						}
 					} catch (Exception e) {
-						Logger.error("Line without appropiate format rejected with error: "+e.getMessage());
+						Logger.error("Line without appropiate, format rejected with error: " + e.getMessage());
 					}
 				}
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 
-			Logger.error("FileNotFoundException "+e.getMessage());
+			Logger.error("FileNotFoundException " + e.getMessage());
 		} catch (IOException e) {
 			Logger.error("IOException " + e.getMessage());
 		} finally {
@@ -76,13 +74,15 @@ public class ReadFileService {
 	private void manageReadedPersons(TreeMap<String, Person> persons) {
 		for (Map.Entry<String, Person> entry : persons.entrySet()) {
 
-
 			if (!persistenceService.personIdExists(entry.getValue().getId())) {
-				persistenceService.insertPersonWithTransaction(entry.getValue());
-				System.out.println("Inserted person with id " + entry.getKey() + " in database");
+				if (persistenceService.insertPersonWithTransaction(entry.getValue())) {
+					Logger.info("Inserted person with id " + entry.getKey() + " in database");
+
+				} else
+					Logger.error("Error calling persistence");
 
 			} else
-				System.out.println("Existing person with id " + entry.getKey() + " in database");
+				Logger.info("Existing person with id " + entry.getKey() + " in database");
 
 		}
 	}

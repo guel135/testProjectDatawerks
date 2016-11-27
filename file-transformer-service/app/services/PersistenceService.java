@@ -10,11 +10,13 @@ import javax.persistence.criteria.Root;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import models.Person;
+import play.Logger;
 import play.db.jpa.JPA;
 
 public class PersistenceService {
 
 	public Boolean personIdExists(Long id) {
+		
 		if (JPA.em().find(Person.class, id) == null) {
 			return false;
 		} else {
@@ -23,13 +25,13 @@ public class PersistenceService {
 
 	}
 
-	public  Person findPersonById(Long id) {
+	public Person findPersonById(Long id) {
 		Person person = JPA.em().find(Person.class, id);
 
 		return person;
 	}
 
-	public  JsonNode readAll() {
+	public JsonNode readAll() {
 		CriteriaBuilder criteriaBuilder = JPA.em().getCriteriaBuilder();
 		CriteriaQuery<Person> criteriaQuery = criteriaBuilder.createQuery(Person.class);
 
@@ -40,13 +42,26 @@ public class PersistenceService {
 		return jsonNodes;
 	}
 
-	public void insertPersonWithTransaction(Person person) {
-		JPA.em().persist(person);
+	public Boolean insertPersonWithTransaction(Person person) {
+		try {
+			JPA.em().persist(person);
+			return true;
+		} catch (Exception e) {
+			Logger.error(e.getMessage());
+			return false;
+		}
 	}
 
-	public  void insertPerson(Person person) {
-		JPA.em().getTransaction().begin();
-		JPA.em().persist(person);
-		JPA.em().getTransaction().commit();
+	public Boolean insertPerson(Person person) {
+
+		try {
+			JPA.em().getTransaction().begin();
+			JPA.em().persist(person);
+			JPA.em().getTransaction().commit();
+			return true;
+		} catch (Exception e) {
+			Logger.error(e.getMessage());
+			return false;
+		}
 	}
 }

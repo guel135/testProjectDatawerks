@@ -43,6 +43,7 @@ public class PersonController extends Controller {
 
 	}
 
+	@Transactional
 	public Result listPersons() {
 
 		JsonNode jsonNodes = persistenceService.readAll();
