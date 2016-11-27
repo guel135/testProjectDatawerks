@@ -80,6 +80,7 @@ public class MessageListener implements Runnable, ExceptionListener {
 			consumer.close();
 			session.close();
 			connection.close();
+			
 		} catch (Exception e) {
 			if (e instanceof InterruptedException) {
 				Logger.info("Message Consumer thread interrupted.");
