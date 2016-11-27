@@ -1,4 +1,4 @@
-package controllers;
+package services;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -17,9 +17,11 @@ import models.Person;
 import play.Logger;
 import play.db.jpa.Transactional;
 
-public class ReadFile {
-	
-	@Transactional(readOnly = true)
+public class ReadFileService {
+
+	public PersistenceService persistenceService = new PersistenceService();
+
+	@Transactional
 	public void loadFileFromDisk(String fileUrl) {
 
 		BufferedReader br = null;
@@ -34,7 +36,6 @@ public class ReadFile {
 				// Filtering incomplete lines, this filter increase performance
 				// avoiding split empty lines.
 				if (!line.contains(",,,,,"))
-				// esto deberia ser con una lambda y un filtro
 				{
 					try {
 						String[] word = line.split(",");
@@ -46,22 +47,22 @@ public class ReadFile {
 							}
 						}
 					} catch (Exception e) {
-						Logger.error("Line without appropiate format rejected with error: "+e.toString());
+						Logger.error("Line without appropiate, format rejected with error: " + e.getMessage());
 					}
 				}
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 
-			Logger.info("FileNotFoundException");
+			Logger.error("FileNotFoundException " + e.getMessage());
 		} catch (IOException e) {
-			Logger.info("IOException");
+			Logger.error("IOException " + e.getMessage());
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					Logger.info("IOException");
+					Logger.error("IOException " + e.getMessage());
 				}
 			}
 		}
@@ -72,14 +73,15 @@ public class ReadFile {
 	private void manageReadedPersons(TreeMap<String, Person> persons) {
 		for (Map.Entry<String, Person> entry : persons.entrySet()) {
 
-			PersistenceController persistenceController = new PersistenceController();
+			if (!persistenceService.personIdExists(entry.getValue().getId())) {
+				if (persistenceService.insertPersonWithTransaction(entry.getValue())) {
+					Logger.info("Inserted person with id " + entry.getKey() + " in database");
 
-			if (!persistenceController.personIdExists(entry.getValue().getId())) {
-				persistenceController.insertPersonWithTransaction(entry.getValue());
-				System.out.println("Inserted person with id " + entry.getKey() + " in database");
+				} else
+					Logger.error("Error calling persistence");
 
 			} else
-				System.out.println("Existing person with id " + entry.getKey() + " in database");
+				Logger.info("Existing person with id " + entry.getKey() + " in database");
 
 		}
 	}

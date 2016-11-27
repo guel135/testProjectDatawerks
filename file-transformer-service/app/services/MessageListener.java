@@ -11,15 +11,19 @@ import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-import controllers.ReadFile;
 import play.Logger;
 import play.db.jpa.JPA;
 
 public class MessageListener implements Runnable, ExceptionListener {
+	
+	private static final String ACTIVEMQ_URL = "tcp://localhost:61616";
+	private static final String PASSWORD = "admin";
+	private static final String USER = PASSWORD;
 	private static final String TOPIC_NAME = "miguelTopic";
 	private static Thread consumerService;
 
 	public static synchronized void initService() {
+		
 		Logger.info("Message Consumer initialized");
 		MessageListener MessageConsumer = new MessageListener();
 		if (consumerService != null) {
@@ -39,8 +43,8 @@ public class MessageListener implements Runnable, ExceptionListener {
 	public void run() {
 		try {
 
-			ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("admin", "admin",
-					"tcp://localhost:61616");
+			ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(USER, PASSWORD,
+					ACTIVEMQ_URL);
 
 			Logger.info("Creating ActiveMQ connection");
 			Connection connection = connectionFactory.createConnection();
@@ -64,7 +68,7 @@ public class MessageListener implements Runnable, ExceptionListener {
 					Logger.info("Received: " + text);
 
 					JPA.withTransaction(() -> {
-						ReadFile readFile = new ReadFile();
+						ReadFileService readFile = new ReadFileService();
 						readFile.loadFileFromDisk(text);
 
 					});
@@ -78,18 +82,18 @@ public class MessageListener implements Runnable, ExceptionListener {
 			consumer.close();
 			session.close();
 			connection.close();
+			
 		} catch (Exception e) {
 			if (e instanceof InterruptedException) {
 				Logger.info("Message Consumer thread interrupted.");
 			} else {
-				Logger.error(e.getLocalizedMessage(), e);
+				Logger.error("Message listerner cannot be inizializated properly" + e.getCause());
 			}
 		}
 	}
 
 	public synchronized void onException(JMSException ex) {
 		Logger.error("JMS Exception occured.  Shutting down client.");
-		Logger.error("ErrorCode=" + ex.getErrorCode() + " , " + ex.getMessage(), ex);
 	}
 
 }

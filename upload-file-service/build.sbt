@@ -10,5 +10,6 @@ libraryDependencies ++= Seq(
   javaJdbc,
   cache,
   javaWs,
-  "org.apache.activemq" % "activemq-camel" % "5.14.1"
+  "org.apache.activemq" % "activemq-camel" % "5.14.1",
+  "org.mockito" % "mockito-core" % "2.2.25" % "test"
 )
