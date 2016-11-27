@@ -36,7 +36,6 @@ public class ReadFileService {
 				// Filtering incomplete lines, this filter increase performance
 				// avoiding split empty lines.
 				if (!line.contains(",,,,,"))
-				// esto deberia ser con una lambda y un filtro
 				{
 					try {
 						String[] word = line.split(",");

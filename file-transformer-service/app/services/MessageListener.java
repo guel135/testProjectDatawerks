@@ -15,10 +15,15 @@ import play.Logger;
 import play.db.jpa.JPA;
 
 public class MessageListener implements Runnable, ExceptionListener {
+	
+	private static final String ACTIVEMQ_URL = "tcp://localhost:61616";
+	private static final String PASSWORD = "admin";
+	private static final String USER = PASSWORD;
 	private static final String TOPIC_NAME = "miguelTopic";
 	private static Thread consumerService;
 
 	public static synchronized void initService() {
+		
 		Logger.info("Message Consumer initialized");
 		MessageListener MessageConsumer = new MessageListener();
 		if (consumerService != null) {
@@ -38,11 +43,8 @@ public class MessageListener implements Runnable, ExceptionListener {
 	public void run() {
 		try {
 
-//			ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(
-//					config.getString("activemq.user"), config.getString("activemq.admin"),
-//					config.getString("activemq.url"));
-			ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("admin", "admin",
-					"tcp://localhost:61616");
+			ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(USER, PASSWORD,
+					ACTIVEMQ_URL);
 
 			Logger.info("Creating ActiveMQ connection");
 			Connection connection = connectionFactory.createConnection();
