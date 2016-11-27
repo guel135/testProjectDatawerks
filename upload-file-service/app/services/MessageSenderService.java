@@ -46,7 +46,7 @@ public class MessageSenderService {
 			session.close();
 			connection.close();
 		} catch (Exception e) {
-			Logger.error("Message cannot be delivered: " + e.getMessage());
+			Logger.error("Message cannot be delivered: " + e.toString());
 		}
 	}
 }
